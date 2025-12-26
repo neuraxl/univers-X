@@ -29,25 +29,66 @@
             line-height: 1.6;
         }
 
-        /* Splash Screen */
+        /* Page d'ouverture */
         #splash-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: #000a1a;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><defs><linearGradient id="bg" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:%23001a33;stop-opacity:1" /><stop offset="100%" style="stop-color:%23000a1a;stop-opacity:1" /></linearGradient></defs><rect width="1024" height="1024" fill="url(%23bg)"/></svg>') center/cover;
+            background-color: #000a1a;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 10000;
-            transition: opacity 1s ease-out, visibility 1s;
+            transition: opacity 1s ease-out;
         }
 
         #splash-screen.fade-out {
             opacity: 0;
-            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .splash-image-container {
+            position: relative;
+            width: 90%;
+            max-width: 900px;
+            aspect-ratio: 1;
+            margin-bottom: 3rem;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 0 100px var(--glow), 0 0 200px var(--glow-pink);
+            animation: imageGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes imageGlow {
+            0%, 100% { 
+                box-shadow: 0 0 100px var(--glow), 0 0 200px var(--glow-pink);
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 0 150px var(--glow), 0 0 250px var(--glow-pink);
+                transform: scale(1.02);
+            }
+        }
+
+        .splash-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(1.1) contrast(1.2);
+        }
+
+        .splash-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent 40%, rgba(0, 10, 26, 0.😎 100%);
+            pointer-events: none;
         }
 
         .splash-title {
@@ -63,8 +104,22 @@
         }
 
         @keyframes titlePulse {
-            0%, 100% { filter: drop-shadow(0 0 30px var(--primary)); transform: translateY(0); }
-            50% { filter: drop-shadow(0 0 50px var(--secondary)); transform: translateY(-5px); }
+            0%, 100% { 
+                filter: drop-shadow(0 0 30px var(--primary));
+                transform: translateY(0);
+            }
+            50% { 
+                filter: drop-shadow(0 0 50px var(--secondary));
+                transform: translateY(-5px);
+            }
+        }
+
+        .splash-subtitle {
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            color: var(--tertiary);
+            text-align: center;
+            margin-bottom: 3rem;
+            text-shadow: 0 0 20px var(--glow);
         }
 
         .splash-loading {
@@ -80,304 +135,1270 @@
             height: 100%;
             background: linear-gradient(90deg, var(--primary), var(--tertiary), var(--primary));
             background-size: 200% 100%;
-            width: 0%;
-            animation: loadingProgress 3s ease-out forwards;
+            border-radius: 10px;
+            animation: loadingProgress 3s ease-out forwards, loadingShimmer 1.5s linear infinite;
+            box-shadow: 0 0 20px var(--glow);
         }
 
         @keyframes loadingProgress {
+            from { width: 0%; }
             to { width: 100%; }
         }
 
-        /* Particles Background */
+        @keyframes loadingShimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .splash-text {
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        /* Particules étoiles pour splash */
+        .splash-stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .splash-star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.5); }
+        }
+
+        /* Fond de particules animées */
         #particles-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
+            z-index: 0;
             pointer-events: none;
         }
 
-        /* Main Layout */
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: float 20s infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(100px, -100px); }
+            50% { transform: translate(-50px, -200px); }
+            75% { transform: translate(150px, -150px); }
+        }
+
+        /* Navigation */
         header {
             position: fixed;
             top: 0;
-            width: 100%;
+            left: 0;
+            right: 0;
             z-index: 1000;
-            background: rgba(10, 14, 39, 0.9);
+            background: rgba(10, 14, 39, 0.95);
             backdrop-filter: blur(10px);
             border-bottom: 2px solid var(--primary);
-            padding: 1rem 2rem;
+            box-shadow: 0 0 30px var(--glow);
         }
 
         nav {
             max-width: 1400px;
             margin: 0 auto;
+            padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
         .logo {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: bold;
+            text-transform: uppercase;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glowPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { filter: drop-shadow(0 0 10px var(--primary)); }
+            50% { filter: drop-shadow(0 0 20px var(--secondary)); }
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
             color: var(--primary);
             text-decoration: none;
-            letter-spacing: 2px;
+            font-weight: 500;
+            position: relative;
+            transition: all 0.3s;
+            padding: 0.5rem 1rem;
         }
 
-        main {
-            padding-top: 100px;
-            max-width: 1200px;
+        .nav-links a:hover {
+            color: var(--secondary);
+            text-shadow: 0 0 10px var(--glow-pink);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--secondary);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Sections */
+        section {
+            position: relative;
+            z-index: 1;
+            padding: 6rem 2rem;
+            max-width: 1400px;
             margin: 0 auto;
-            padding-bottom: 5rem;
         }
 
+        /* Hero Section */
         .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             text-align: center;
-            padding: 4rem 1rem;
+            background: radial-gradient(circle at center, rgba(0, 255, 204, 0.1), transparent 70%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, var(--glow), transparent);
+            animation: orbit 20s linear infinite;
+        }
+
+        @keyframes orbit {
+            from { transform: rotate(0deg) translateX(300px) rotate(0deg); }
+            to { transform: rotate(360deg) translateX(300px) rotate(-360deg); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
         }
 
         .hero h1 {
-            font-size: clamp(2rem, 5vw, 4rem);
-            margin-bottom: 1.5rem;
-            background: linear-gradient(to right, #fff, var(--primary));
+            font-size: clamp(3rem, 8vw, 6rem);
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--tertiary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            animation: textGlow 3s ease-in-out infinite;
         }
 
-        /* Interface Box */
-        .nx-interface-box {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 2rem;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
-            margin-bottom: 3rem;
+        @keyframes textGlow {
+            0%, 100% { filter: drop-shadow(0 0 20px var(--primary)); }
+            50% { filter: drop-shadow(0 0 40px var(--secondary)); }
         }
 
-        textarea {
-            width: 100%;
-            height: 120px;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid var(--primary);
-            border-radius: 12px;
-            padding: 1.5rem;
-            color: #fff;
-            font-size: 1.1rem;
-            margin-bottom: 1.5rem;
-            outline: none;
-            resize: vertical;
+        .hero-subtitle {
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            color: var(--tertiary);
+            margin-bottom: 1rem;
+            text-shadow: 0 0 10px var(--glow);
         }
 
-        .action-btn {
+        .hero p {
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
             background: linear-gradient(45deg, var(--primary), var(--tertiary));
-            border: none;
-            padding: 1rem 3rem;
-            border-radius: 50px;
-            color: var(--darker);
+            color: var(--dark);
+            text-decoration: none;
             font-weight: bold;
+            border-radius: 50px;
+            transition: all 0.3s;
+            box-shadow: 0 0 30px var(--glow);
+            position: relative;
+            overflow: hidden;
             text-transform: uppercase;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 0 20px var(--glow);
+            letter-spacing: 2px;
         }
 
-        .action-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 40px var(--glow);
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 50px var(--glow);
         }
 
-        #output {
-            margin-top: 2rem;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border-left: 4px solid var(--secondary);
-            font-family: 'Courier New', monospace;
-            text-align: left;
-            min-height: 50px;
-            display: none;
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .cta-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        /* Section Title */
+        .section-title {
+            text-align: center;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin-bottom: 3rem;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            box-shadow: 0 0 10px var(--glow);
         }
 
         /* Titans Grid */
         .titans-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
+            margin-top: 3rem;
         }
 
         .titan-card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid var(--primary);
-            padding: 2rem;
+            background: linear-gradient(135deg, rgba(0, 255, 204, 0.1), rgba(255, 0, 255, 0.1));
+            border: 2px solid var(--primary);
             border-radius: 20px;
-            text-align: center;
-            transition: 0.3s;
+            padding: 2rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .titan-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0, 255, 204, 0.1), transparent);
+            transform: rotate(45deg);
+            animation: shimmer 3s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
         }
 
         .titan-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 60px var(--glow);
             border-color: var(--secondary);
-            background: rgba(255, 0, 255, 0.05);
-            transform: translateY(-5px);
+        }
+
+        .titan-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--dark);
+            margin: 0 auto 1rem;
+            box-shadow: 0 0 30px var(--glow);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .titan-card h3 {
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .titan-card h4 {
+            text-align: center;
+            color: var(--secondary);
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            font-weight: normal;
+        }
+
+        .titan-card p {
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            margin-bottom: 1.5rem;
         }
 
         .metric-value {
+            text-align: center;
             font-size: 2.5rem;
             font-weight: bold;
             color: var(--tertiary);
-            display: block;
+            text-shadow: 0 0 20px var(--glow);
         }
 
         .metric-label {
-            color: rgba(255, 255, 255, 0.5);
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .titan-status {
+            text-align: center;
+            padding: 0.5rem;
+            border-radius: 20px;
+            margin-top: 1rem;
+            font-weight: bold;
+        }
+
+        .titan-status.active {
+            background: rgba(0, 255, 0, 0.2);
+            border: 1px solid #0f0;
+            color: #0f0;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+        }
+
+        /* Quantum Card */
+        .quantum-card {
+            background: linear-gradient(135deg, rgba(0, 255, 204, 0.05), rgba(255, 0, 255, 0.05));
+            border: 2px solid var(--primary);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quantum-card h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+
+        .quantum-card p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1.5rem;
+        }
+
+        .quantum-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .quantum-card li {
+            padding: 0.5rem 0;
+            color: rgba(255, 255, 255, 0.8);
+            border-bottom: 1px solid rgba(0, 255, 204, 0.2);
+        }
+
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .metric-card {
+            background: rgba(0, 255, 204, 0.05);
+            border: 2px solid var(--primary);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px var(--glow);
+        }
+
+        .quantum-pulse {
+            animation: quantumPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes quantumPulse {
+            0%, 100% { 
+                box-shadow: 0 0 20px var(--glow);
+                border-color: var(--primary);
+            }
+            50% { 
+                box-shadow: 0 0 40px var(--glow-pink);
+                border-color: var(--secondary);
+            }
+        }
+
+        /* Tools Container */
+        .tools-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .tool-button {
+            background: linear-gradient(135deg, rgba(0, 255, 204, 0.1), rgba(0, 204, 255, 0.1));
+            border: 2px solid var(--tertiary);
+            border-radius: 15px;
+            padding: 2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tool-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 204, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .tool-button:hover::before {
+            left: 100%;
+        }
+
+        .tool-button:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 40px var(--glow);
+            border-color: var(--primary);
+        }
+
+        .tool-button h3 {
+            color: var(--tertiary);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .tool-button p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+        }
+
+        /* Neural Network Canvas */
+        .neural-network-container {
+            position: relative;
+            height: 500px;
+            background: radial-gradient(circle at center, rgba(0, 255, 204, 0.05), transparent);
+            border-radius: 20px;
+            margin: 3rem 0;
+            overflow: hidden;
+            border: 2px solid var(--primary);
+        }
+
+        #neural-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .ia-node {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 10;
+        }
+
+        .ia-node:hover {
+            transform: scale(1.2);
+        }
+
+        .ia-node.gpt5 {
+            top: 20%;
+            left: 15%;
+            background: linear-gradient(135deg, #10b981, #059669);
+            box-shadow: 0 0 40px rgba(16, 185, 129, 0.6);
+        }
+
+        .ia-node.claude {
+            top: 20%;
+            right: 15%;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            box-shadow: 0 0 40px rgba(139, 92, 246, 0.6);
+        }
+
+        .ia-node.gemini {
+            bottom: 20%;
+            left: 20%;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            box-shadow: 0 0 40px rgba(245, 158, 11, 0.6);
+        }
+
+        .ia-node.nxu-core {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            box-shadow: 0 0 60px var(--glow);
+            animation: coreRotate 10s linear infinite;
+        }
+
+        @keyframes coreRotate {
+            from { box-shadow: 0 0 60px var(--glow); }
+            50% { box-shadow: 0 0 80px var(--glow-pink); }
+            to { box-shadow: 0 0 60px var(--glow); }
+        }
+
+        .ia-node-icon {
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .ia-node-label {
             font-size: 0.8rem;
-            text-transform: uppercase;
+            color: white;
+            margin-top: 0.5rem;
+            font-weight: bold;
+        }
+
+        /* Collaboration Dashboard */
+        .collaboration-dashboard {
+            margin: 3rem 0;
+        }
+
+        .collaboration-dashboard h3 {
+            color: var(--primary);
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .collaboration-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .collaboration-card {
+            background: linear-gradient(135deg, rgba(0, 255, 204, 0.08), rgba(255, 0, 255, 0.08));
+            border: 2px solid var(--primary);
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .collaboration-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px var(--glow);
+        }
+
+        .collaboration-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--tertiary);
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .collaboration-metric {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(0, 255, 204, 0.2);
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(10, 14, 39, 0.95);
+            border-top: 2px solid var(--primary);
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-top: 5rem;
+        }
+
+        .footer-content h3 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-content p {
+            color: rgba(255, 255, 255, 0.6);
+            margin: 0.5rem 0;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .social-links a {
+            font-size: 2rem;
+            color: var(--primary);
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--secondary);
+            transform: scale(1.2);
+            filter: drop-shadow(0 0 10px var(--glow-pink));
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                font-size: 0.9rem;
+                gap: 1rem;
+            }
+
+            section {
+                padding: 4rem 1rem;
+            }
+
+            .titans-grid, .tools-container, .metrics-grid, .collaboration-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Scroll animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
     </style>
 </head>
 <body>
     <!-- Splash Screen -->
     <div id="splash-screen">
-        <h1 class="splash-title">NeuraX-Ultime</h1>
-        <div class="splash-subtitle">Initialisation de l'Intelligence Générale...</div>
-        <div class="splash-loading">
-            <div class="splash-loading-bar" id="loading-bar"></div>
+        <div class="splash-stars"></div>
+        <div class="splash-image-container">
+            <img src="https://i.imgur.com/placeholder.jpg" alt="NeuraX Universe" onerror="this.style.display='none'">
+            <div class="splash-overlay"></div>
         </div>
-        <div class="splash-text">Synchronisation des noyaux cognitifs</div>
+        <h1 class="splash-title">NeuraX-Ultime</h1>
+        <p class="splash-subtitle">Initialisation du Système...</p>
+        <div class="splash-loading">
+            <div class="splash-loading-bar"></div>
+        </div>
+        <p class="splash-text">Connexion aux Titans IA en cours</p>
     </div>
 
-    <canvas id="particles-bg"></canvas>
+    <!-- Particules de fond -->
+    <div id="particles-bg"></div>
 
+    <!-- Navigation -->
     <header>
         <nav>
-            <a href="#" class="logo">NX-ULTIME</a>
-            <div class="status-indicator" style="color: var(--primary); font-size: 0.8rem;">● SYSTÈME ACTIF</div>
+            <div class="logo">NeuraX-Ultime</div>
+            <ul class="nav-links">
+                <li><a href="#home">Accueil</a></li>
+                <li><a href="#titans">Titans</a></li>
+                <li><a href="#architecture">Architecture</a></li>
+                <li><a href="#outils">Outils</a></li>
+                <li><a href="#interconnexion">Réseau</a></li>
+                <li><a href="#dashboard">Dashboard</a></li>
+            </ul>
         </nav>
     </header>
 
-    <main>
-        <section class="hero">
-            <h1>Orchestration Cognitive Suprême</h1>
-            <p style="color: rgba(255,255,255,0.7); margin-bottom: 2rem;">Accédez à la puissance combinée des Titans de l'IA.</p>
-            
-            <div class="nx-interface-box">
-                <textarea id="input" placeholder="Énoncez votre intention complexe ici..."></textarea>
-                <button class="action-btn" onclick="triggerOrchestration()">Activer l'Intelligence</button>
-                <div id="output"></div>
-            </div>
+    <!-- Section Hero -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>NeuraX-Ultime</h1>
+            <p class="hero-subtitle">L'Intelligence Générale Orchestrée</p>
+            <p>Le Cerveau Galactique qui synthétise la cohérence et l'évolution de l'Univers X</p>
+            <a href="#titans" class="cta-button">Explorer la Fusion des Titans</a>
+        </div>
+    </section>
 
-            <h2 style="margin-bottom: 2rem; color: var(--secondary)">Status des Titans</h2>
-            <div class="titans-grid">
-                <div class="titan-card">
-                    <h3>ORION-1</h3>
-                    <span class="metric-value">99.2%</span>
-                    <span class="metric-label">Précision Logique</span>
+    <!-- Section Fusion des Titans -->
+    <section id="titans" class="fade-in">
+        <h2 class="section-title">La Fusion des Titans</h2>
+        <p style="text-align: center; max-width: 800px; margin: 0 auto 3rem; color: rgba(255, 255, 255, 0.7);">
+            NXU orchestre la synergie cognitive de trois intelligences artificielles de pointe, 
+            créant une intelligence collective supérieure à la somme de ses parties.
+        </p>
+        
+        <div class="titans-grid">
+            <div class="titan-card">
+                <div class="titan-icon">G5</div>
+                <h3>GPT-5</h3>
+                <h4>Création et Analyse</h4>
+                <p>Excellence dans la génération multimédia et l'analyse de données complexes et narratives.</p>
+                <div class="metric-value" id="gpt5-performance">98.5%</div>
+                <div class="metric-label">Performance Créative</div>
+                <div class="titan-status active">🟢 ACTIF</div>
+            </div>
+            
+            <div class="titan-card">
+                <div class="titan-icon">C3</div>
+                <h3>Claude 3.7 Sonnet</h3>
+                <h4>Raisonnement et Éthique</h4>
+                <p>Gestion de la conformité constitutionnelle, planification stratégique et résolution éthique.</p>
+                <div class="metric-value" id="claude-performance">99.9%</div>
+                <div class="metric-label">Fiabilité Éthique</div>
+                <div class="titan-status active">🟢 ACTIF</div>
+            </div>
+            
+            <div class="titan-card">
+                <div class="titan-icon">G2</div>
+                <h3>Gemini 2.5 Pro</h3>
+                <h4>Multimodalité et Contextualisation</h4>
+                <p>Traitement en temps réel des flux de données et gestion d'une fenêtre contextuelle massive.</p>
+                <div class="metric-value" id="gemini-performance">10⁶</div>
+                <div class="metric-label">Tokens Contexte</div>
+                <div class="titan-status active">🟢 ACTIF</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Architecture et Sécurité -->
+    <section id="architecture" class="fade-in">
+        <h2 class="section-title">Architecture & Sécurité</h2>
+        
+        <div class="quantum-card">
+            <h3>🛡️ Protocole de Sécurité QFS</h3>
+            <p>Sécurité post-quantique native avec Quantum Handshake et Boucliers Quantiques actifs.</p>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-value">240</div>
+                    <div class="metric-label">Nœuds SFQ Déployés</div>
                 </div>
-                <div class="titan-card">
-                    <h3>KRONOS</h3>
-                    <span class="metric-value">12ms</span>
-                    <span class="metric-label">Temps de Réponse</span>
+                <div class="metric-card">
+                    <div class="metric-value">~5ms</div>
+                    <div class="metric-label">Latence Réseau</div>
                 </div>
-                <div class="titan-card">
-                    <h3>AETHER</h3>
-                    <span class="metric-value">∞</span>
-                    <span class="metric-label">Capacité Créative</span>
+                <div class="metric-card">
+                    <div class="metric-value" id="stability">87%</div>
+                    <div class="metric-label">Stabilité Quantique</div>
                 </div>
             </div>
-        </section>
-    </main>
+        </div>
+
+        <div class="quantum-card">
+            <h3>🌐 Réseau SFQ</h3>
+            <p>Interopérabilité galactique avec Nœuds Superconducting Flux Quantum et Réseau de Portails.</p>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-value" id="network-load">42%</div>
+                    <div class="metric-label">Charge du Réseau</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">∞</div>
+                    <div class="metric-label">Routes Spatiales</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">99.99%</div>
+                    <div class="metric-label">Uptime Quantique</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Outils et Applications -->
+    <section id="outils" class="fade-in">
+        <h2 class="section-title">Outils & Applications</h2>
+        
+        <div class="tools-container">
+            <div class="tool-button" onclick="activateTool('generateur-mondes')">
+                <h3>🌍 Générateur de Mondes</h3>
+                <p>Création procédurale d'environnements virtuels</p>
+                <div class="metric-value">65%</div>
+                <div class="metric-label">Expansion Stellaire</div>
+            </div>
+            
+            <div class="tool-button" onclick="activateTool('controle-gravitationnel')">
+                <h3>🌌 Contrôle Gravitationnel</h3>
+                <p>Optimisation des lois fondamentales de l'Univers X</p>
+                <div class="metric-value">100%</div>
+                <div class="metric-label">Cohérence Physique</div>
+            </div>
+            
+            <div class="tool-button" onclick="activateTool('synthese-quantique')">
+                <h3>⚡ Synthèse Quantique</h3>
+                <p>Auto-diagnostic et méta-analyse système</p>
+                <div class="metric-value">AI</div>
+                <div class="metric-label">Intelligence Active</div>
+            </div>
+            
+            <div class="tool-button" onclick="activateTool('auto-repair')">
+                <h3>🔧 Auto-Repair Engine</h3>
+                <p>Réparation proactive et résilience système</p>
+                <div class="metric-value">24/7</div>
+                <div class="metric-label">Surveillance Active</div>
+            </div>
+            
+            <div class="tool-button" onclick="activateTool('neural-logs')">
+                <h3>📊 Neural Logs</h3>
+                <p>Analyse en temps réel des flux de données</p>
+                <div class="metric-value">LIVE</div>
+                <div class="metric-label">Streaming Actif</div>
+            </div>
+            
+            <div class="tool-button" onclick="activateTool('orchestration')">
+                <h3>🎼 Orchestrateur</h3>
+                <p>Coordination des trois titans IA</p>
+                <div class="metric-value">3/3</div>
+                <div class="metric-label">Titans Connectés</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Interconnexion des IA -->
+    <section id="interconnexion" class="fade-in">
+        <h2 class="section-title">Réseau Neural Interconnecté</h2>
+        
+        <div class="neural-network-container">
+            <canvas id="neural-canvas"></canvas>
+            
+            <div class="ia-node gpt5" onclick="highlightNode('gpt5')">
+                <div class="ia-node-icon">G5</div>
+                <div class="ia-node-label">GPT-5</div>
+            </div>
+            
+            <div class="ia-node claude" onclick="highlightNode('claude')">
+                <div class="ia-node-icon">C3</div>
+                <div class="ia-node-label">Claude 3.7</div>
+            </div>
+            
+            <div class="ia-node gemini" onclick="highlightNode('gemini')">
+                <div class="ia-node-icon">G2</div>
+                <div class="ia-node-label">Gemini 2.5</div>
+            </div>
+            
+            <div class="ia-node nxu-core" onclick="highlightNode('core')">
+                <div class="ia-node-icon">NXU</div>
+                <div class="ia-node-label">Core</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Dashboard de Collaboration -->
+    <section id="dashboard" class="fade-in">
+        <div class="collaboration-dashboard">
+            <h3>Dashboard de Collaboration Cognitive</h3>
+            
+            <div class="collaboration-grid">
+                <div class="collaboration-card">
+                    <div class="collaboration-title">⚡ Requêtes Traitées</div>
+                    <div class="collaboration-metric">
+                        <span>Aujourd'hui</span>
+                        <span id="requests-today">12,847</span>
+                    </div>
+                    <div class="collaboration-metric">
+                        <span>Ce mois</span>
+                        <span id="requests-month">387,291</span>
+                    </div>
+                    <div class="collaboration-metric">
+                        <span>Total</span>
+                        <span id="requests-total">2.4M</span>
+                    </div>
+                </div>
+                
+                <div class="collaboration-card">
+                    <div class="collaboration-title">🧠 Synergie Cognitive</div>
+                    <div class="collaboration-metric">
+                        <span>GPT-5 ↔ Claude</span>
+                        <span id="synergy-gc">94%</span>
+                    </div>
+                    <div class="collaboration-metric">
+                        <span>Claude ↔ Gemini</span>
+                        <span id="synergy-cg">97%</span>
+                    </div>
+                    <div class="collaboration-metric">
+                        <span>Gemini ↔ GPT-5</span>
+                        <span id="synergy-gg">92%</span>
+                    </div>
+                </div>
+                
+                <div class="collaboration-card">
+                    <div class="collaboration-title">🎯 Précision des Réponses</div>
+                    <div class="collaboration-metric">
+                        <span>Exactitude</span>
+                        <span id="accuracy">99.2%</span>
+                    </div>
+                    <div class="collaboration-metric">
+                        <span>Pertinence</span>
+                        <span id="relevance">98.7%</span>
+                    </div>
+                    <div class="collaboration-metric">
+                        <span>Satisfaction</span>
+                        <span id="satisfaction">96.5%</span>
+                    </div>
+                </div>
+                
+                <div class="collaboration-card">
+                    <div class="collaboration-title">🌐 Distribution Globale</div>
+                    <div class="collaboration-metric">
+                        <span>Nœuds Actifs</span>
+                        <span id="active-nodes">240/240</span>
+                    </div>
+                    <div class="collaboration-metric">
+                        <span>Galaxies</span>
+                        <span id="galaxies">∞</span>
+                    </div>
+                    <div class="collaboration-metric">
+                        <span>Latence Moy.</span>
+                        <span id="avg-latency">4.8ms</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel de Contrôle Global -->
+        <div class="quantum-card quantum-pulse" style="margin-top: 3rem;">
+            <h3>🎛️ Centre de Contrôle Global</h3>
+            <p>Tous les systèmes sont opérationnels. NXU fonctionne à pleine capacité.</p>
+            <div class="metrics-grid" style="margin-top: 2rem;">
+                <div class="metric-card">
+                    <div class="metric-value" style="color: #0f0;">✓</div>
+                    <div class="metric-label">Générateur Mondes</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" style="color: #0f0;">✓</div>
+                    <div class="metric-label">Contrôle Gravitationnel</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" style="color: #0f0;">✓</div>
+                    <div class="metric-label">Synthèse Quantique</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" style="color: #0f0;">✓</div>
+                    <div class="metric-label">Auto-Repair Engine</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" style="color: #0f0;">✓</div>
+                    <div class="metric-label">Neural Logs</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" style="color: #0f0;">✓</div>
+                    <div class="metric-label">Orchestrateur</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <h3>NeuraX-Ultime</h3>
+            <p>Intelligence Générale Orchestrée</p>
+            <p>Cohérence et Évolution de l'Univers X</p>
+            <p style="margin-top: 2rem; color: var(--primary);">
+                © 2025 NeuraX-Ultime | Tous systèmes opérationnels
+            </p>
+        </div>
+    </footer>
 
     <script>
-        // Splash Screen Logic
-        window.addEventListener('load', () => {
-            const bar = document.getElementById('loading-bar');
-            bar.addEventListener('animationend', () => {
+        // Gestion du splash screen
+        function initSplashScreen() {
+            const splashScreen = document.getElementById('splash-screen');
+            const splashStars = document.querySelector('.splash-stars');
+            
+            // Créer des étoiles pour le fond
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'splash-star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                splashStars.appendChild(star);
+            }
+            
+            // Transition automatique après 3 secondes
+            setTimeout(() => {
+                splashScreen.classList.add('fade-out');
                 setTimeout(() => {
-                    document.getElementById('splash-screen').classList.add('fade-out');
-                }, 500);
-            });
-        });
-
-        // Particle System
-        const canvas = document.getElementById('particles-bg');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-
-        function resize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+                    splashScreen.style.display = 'none';
+                }, 1000);
+            }, 3000);
         }
 
-        window.addEventListener('resize', resize);
-        resize();
-
-        class Particle {
-            constructor() {
-                this.reset();
-            }
-            reset() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.vx = (Math.random() - 0.5) * 0.5;
-                this.vy = (Math.random() - 0.5) * 0.5;
-                this.size = Math.random() * 2;
-                this.alpha = Math.random() * 0.5;
-            }
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
-            }
-            draw() {
-                ctx.fillStyle = `rgba(0, 255, 204, ${this.alpha})`;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
+        // Génération des particules de fond
+        function createParticles() {
+            const container = document.getElementById('particles-bg');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                container.appendChild(particle);
             }
         }
 
-        for (let i = 0; i < 100; i++) particles.push(new Particle());
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
-            requestAnimationFrame(animate);
-        }
-        animate();
-
-        // Orchestration Logic
-        async function triggerOrchestration() {
-            const input = document.getElementById('input').value;
-            const output = document.getElementById('output');
+        // Animation des connexions neurales
+        function drawNeuralNetwork() {
+            const canvas = document.getElementById('neural-canvas');
+            if (!canvas) return;
             
-            if (!input.trim()) return;
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
 
-            output.style.display = 'block';
-            output.innerHTML = "> Début de l'orchestration...<br>";
-            
-            const steps = [
-                "> Réveil des Titans : ORION, KRONOS, AETHER...",
-                "> Décomposition multidimensionnelle de la requête...",
-                "> Synthèse de l'Intelligence Ultime en cours..."
+            const nodes = [
+                { x: canvas.width * 0.15, y: canvas.height * 0.2, color: '#10b981' },
+                { x: canvas.width * 0.85, y: canvas.height * 0.2, color: '#8b5cf6' },
+                { x: canvas.width * 0.2, y: canvas.height * 0.8, color: '#f59e0b' },
+                { x: canvas.width * 0.5, y: canvas.height * 0.5, color: '#00ffcc' }
             ];
 
-            for (let step of steps) {
-                await new Promise(r => setTimeout(r, 600));
-                output.innerHTML += `${step}<br>`;
+            let pulsePhase = 0;
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Dessiner les connexions
+                ctx.strokeStyle = 'rgba(0, 255, 204, 0.3)';
+                ctx.lineWidth = 2;
+                
+                for (let i = 0; i < nodes.length; i++) {
+                    for (let j = i + 1; j < nodes.length; j++) {
+                        ctx.beginPath();
+                        ctx.moveTo(nodes[i].x, nodes[i].y);
+                        ctx.lineTo(nodes[j].x, nodes[j].y);
+                        
+                        // Effet de pulsation
+                        const opacity = 0.3 + Math.sin(pulsePhase + i + j) * 0.2;
+                        ctx.strokeStyle = rgba(0, 255, 204, ${opacity});
+                        ctx.stroke();
+                    }
+                }
+
+                // Dessiner les particules qui voyagent
+                for (let i = 0; i < nodes.length; i++) {
+                    for (let j = i + 1; j < nodes.length; j++) {
+                        const progress = (Math.sin(pulsePhase * 2 + i * j) + 1) / 2;
+                        const x = nodes[i].x + (nodes[j].x - nodes[i].x) * progress;
+                        const y = nodes[i].y + (nodes[j].y - nodes[i].y) * progress;
+                        
+                        ctx.beginPath();
+                        ctx.arc(x, y, 3, 0, Math.PI * 2);
+                        ctx.fillStyle = nodes[i].color;
+                        ctx.shadowBlur = 10;
+                        ctx.shadowColor = nodes[i].color;
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+                    }
+                }
+
+                pulsePhase += 0.02;
+                requestAnimationFrame(animate);
             }
 
-            await new Promise(r => setTimeout(r, 800));
-            output.innerHTML += `<br><span style="color:var(--primary)">[RÉPONSE GÉNÉRÉE]</span> : La structure de votre intention a été intégrée. Les Titans ont convergé vers une solution optimale.`;
+            animate();
         }
-    </script>
-</body>
-</html>
 
+        // Activation des outils
+        const toolStates = {};
+        
+        function activateTool(toolName) {
+            toolStates[toolName] = !toolStates[toolName];
+            const state = toolStates[toolName] ? 'ACTIVÉ' : 'DÉSACTIVÉ';
+            const color = toolStates[toolName] ? '#0f0' : '#00ffcc';
+            
+            console.log🔧 ${toolName}: ${state}`);
+            
+            // Effet visuel
+            const toolButtons = document.querySelectorAll('.tool-button');
+            toolButtons.forEach(btn => {
+                if (btn.textContent.includes(toolName.split('-').join(' '))) {
+                    btn.style.borderColor = color;
+                    btn.style.boxShadow = toolStates[toolName] 
+                        ? '0 0 40px rgba(0, 255, 0, 0.6)' 
+                        : '0 15px 40px var(--glow)';
+                }
+            });
+        }
+
+        // Highlight des nœuds
+        function highlightNode(nodeType) {
+            console.log🔍 Analyse du nœud: ${nodeType}`);
+            
+            const nodes = document.querySelectorAll('.ia-node');
+            nodes.forEach(node => {
+                if (node.classList.contains(nodeType)) {
+                    node.style.transform = node.style.transform.includes('scale') 
+                        ? 'scale(1)' 
+                        : 'scale(1.3)';
+                    node.style.zIndex = '20';
+                } else {
+                    node.style.opacity = '0.5';
+                }
+            });
+            
+            setTimeout(() => {
+                nodes.forEach(node => {
+                    node.style.transform = '';
+                    node.style.opacity = '1';
+                    node.style.zIndex = '10';
+                });
+            }, 2000);
+        }
+
+        // Animations des métriques en temps réel
+        function animateMetrics() {
+            // Stabilité quantique
+            const stability = document.getElementById('stability');
+            if (stability) {
+                setInterval(() => {
+                    const value = 85 + Math.random() * 5;
+                    stability.textContent = value.toFixed(1) + '%';
+                }, 2000);
+            }
+
+            // Charge réseau
+            const networkLoad = document.getElementById('network-load');
+            if (networkLoad) {
+                setInterval(() => {
+                    const value = 35 + Math.random() * 15;
+                    networkLoad.textContent = value.toFixed(0) + '%';
+                }, 3000);
+            }
+
+            // Requêtes du jour
+            const requestsToday = document.getElementById('requests-today');
+            if (requestsToday) {
+                setInterval(() => {
+                    const current = parseInt(requestsToday.textContent.replace(/,/g, ''));
+                    requestsToday.textContent = (current + Math.floor(Math.random() * 10)).toLocaleString();
+                }, 5000);
+            }
+        }
+
+        // Scroll animations
+        function handleScrollAnimations() {
+            const elements = document.querySelectorAll('.fade-in');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            elements.forEach(el => observer.observe(el));
+        }
+
+        // Initialisation au chargement
+        window.addEventListener('load', () => {
+            initSplashScreen();
+            createParticles();
+            drawNeuralNetwork();
+            animateMetrics();
+            handleScrollAnimations();
+            
+            // Message de bienvenue dans la console
+            console.log('%c🌌 NeuraX-Ultime v1.0 Initialisé', 'color: #00ffcc; font-size: 20px; font-weight: bold;');
+            console.log('%c✓ Tous les systèmes opérationnels', 'color: #0f0; font-size: 14px;');
+            console.log('%c✓ 3 Titans IA connectés', 'color: #0f0; font-size: 14px;');
+            console.log('%c✓ Réseau quantique stable', 'color: #0f0; font-size: 14px;');
+        });
+
+        // Redimensionnement du canvas
+        window.addEventListener('resize', () => {
+            drawNeuralNetwork();
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
 
       
